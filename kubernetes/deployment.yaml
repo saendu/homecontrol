@@ -35,6 +35,8 @@ spec:
             secretKeyRef:
               name: homecontrol-config
               key: SECURITYCODE
+        - name: ADMIN_USER
+          value: admin
         - name: ADMIN_SECRET
           valueFrom:
             secretKeyRef:
