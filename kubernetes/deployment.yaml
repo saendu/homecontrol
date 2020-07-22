@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homecontrol
+spec:
+  selector:
+    matchLabels:
+      app: homecontrol
+  template:
+    metadata:
+      labels:
+        app: homecontrol
+    spec:
+      containers:
+      - name: homecontrol
+        image: blacktr/homecontrol:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+        env:
+        - name: NODE_ENV
+          value: production
+        - name: PORT
+          value: "5000"
+        - name: APP_URL_PREFIX
+          value: homecontrol
+        - name: GATEWAY_IP
+          value: 192.168.1.128
+        - name: SECURITYCODE
+          valueFrom:
+            secretKeyRef:
+              name: homecontrol-config
+              key: SECURITYCODE
+        - name: ADMIN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: homecontrol-config
+              key: ADMIN_SECRET  
