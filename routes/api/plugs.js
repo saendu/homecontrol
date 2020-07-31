@@ -38,8 +38,21 @@ function tradfri_deviceUpdated(device) {
   }
 }
 
+function restoreConnection() {
+  try {
+    tradfri.destroy();
+    console.log(`*** DESTROYED CONNECTION ***`);
+
+    connect();
+    console.log(`*** CONNECTED TO ${process.env.GATEWAY_IP} ***`);
+  } catch (error) {
+    console.log(`ERROR during restoring connection: ${error}`);
+  }
+  
+}
+
 connect();
-console.log(`*** CONNECTED TO ${process.env.GATEWAY_IP} ***`)
+console.log(`*** CONNECTED TO ${process.env.GATEWAY_IP} ***`);
 
 router.get('/', (req, res) => {
     //res.json(plugs);
@@ -58,6 +71,8 @@ router.put('/:plugId/toggle', async (req, res) => {
   }
   catch(error) {
     console.log(error);
+    // restoring connection because this is 9/10 times the problem
+    restoreConnection();
   }
 
   res.json(safePlugInfo);
@@ -75,6 +90,8 @@ router.put('/:plugId/on', async (req, res) => {
   }
   catch(error) {
     console.log(error);
+    // restoring connection because this is 9/10 times the problem
+    restoreConnection();
   }
   res.json(safePlugInfo);
 });
@@ -91,6 +108,8 @@ router.put('/:plugId/off', async (req, res) => {
   }
   catch(error) {
     console.log(error);
+    // restoring connection because this is 9/10 times the problem
+    restoreConnection();
   }
   res.json(safePlugInfo);
 });
