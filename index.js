@@ -5,13 +5,17 @@ const logger = require('./middleware/logger');
 const authenticate = require('./middleware/authentication');
 const members = require('./Members');
 const dotenv = require('dotenv');
-
 dotenv.config();
+
+const deviceConnector = require('./middleware/deviceconnector');
 const APP_URL_PREFIX = process.env.APP_URL_PREFIX || 'api';
 const PORT = process.env.PORT || 5000;
 
-const app = express();
+// Tradfri
+deviceConnector.connect();
+console.log(`*** CONNECTED TO ${process.env.GATEWAY_IP} ***`);
 
+const app = express();
 // Init middleware
 app.use(logger);
 
@@ -36,6 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // API Routes
 app.use(`/${APP_URL_PREFIX}/plugs`, authenticate, require('./routes/api/plugs'));
+app.use(`/${APP_URL_PREFIX}/bulbs`, authenticate, require('./routes/api/bulbs'));
 
 // Port Listener
 app.listen(PORT, () => console.log(`Server started on port ${PORT} with URL PREFIX: ${APP_URL_PREFIX}`));
